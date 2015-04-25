@@ -3,3 +3,5 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET 22 (msg:"NetHobo Potential SSH Scan"; f
 alert tcp $HOME_NET any -> $EXTERNAL_NET 22 (msg:"NetHobo Potential SSH Scan OUTBOUND"; flags:S,12; threshold: type threshold, track by_src, count 5, seconds 300; reference:url,en.wikipedia.org/wiki/Brute_force_attack; reference:url,www.networkhobo.om; classtype:attempted-recon; sid:9000002; rev:1;)
 
 alert ssh $EXTERNAL_NET any -> $HOME_NET 22 (msg:"NetHobo LibSSH Based Frequent SSH Connections Likely BruteForce Attack!"; flow:established,to_server; content:"SSH-"; content:"libssh"; within:20; threshold: type both, count 5, seconds 300, track by_src; reference:url,doc.emergingthreats.net/2006546; reference:url,www.networkhobo.com; class type:attempted-admin; sid:9000003; rev:1;)
+
+alert udp $EXTERNAL_NET any -> $HOME_NET [16470:16471,16464:16465] (msg:"ZeroAccess Worm UDP Network -- BLOCKING SOURCE"; threshold: type both, track by_src, count 3, seconds 60; classtype:policy-violation; sid:9000004; rev:1;)
